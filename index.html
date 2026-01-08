@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escolha Seu Presente ❤️</title>
 <style>
-body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#ff5f9e,#ff9acb);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden}
-.container{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:20px;padding:30px;max-width:900px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.25);position:relative;z-index:2}
+body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#ff5f9e,#ff9acb);min-height:100svh;display:flex;align-items:center;justify-content:center;color:#fff;overflow-x:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.container{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:20px;padding:30px 20px 40px;max-width:900px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.25);position:relative;z-index:2;max-height:calc(100svh - 40px);overflow-y:auto}
 h1{font-size:2.3rem}
 .subtitle{margin-bottom:25px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px}
 .card{background:#fff;color:#ff4d94;border-radius:15px;padding:25px 10px;font-size:1.3rem;font-weight:bold;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2)}
 .card.opened{background:#ff4d94;color:#fff}
-.result{display:none;margin-top:25px;animation:fade .5s ease}
+.result{display:none;margin-top:25px;animation:fade .5s ease}#resultText{display:inline-block;font-size:1.3rem;font-weight:600;white-space:pre-wrap;border-right:2px solid rgba(255,255,255,.8);padding-right:4px;animation:blink 1s step-end infinite}@keyframes blink{50%{border-color:transparent}}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .heart{position:fixed;top:-10px;font-size:22px;animation:fall linear forwards;z-index:1}
 @keyframes fall{to{transform:translateY(110vh);opacity:0}}
@@ -56,6 +56,19 @@ const music=document.getElementById('music');
 const cards=document.getElementById('cards');
 const result=document.getElementById('result');
 const resultText=document.getElementById('resultText');
+function typeText(text){
+  resultText.textContent='';
+  let i=0;
+  const speed=45;
+  const timer=setInterval(()=>{
+    resultText.textContent+=text.charAt(i);
+    i++;
+    if(i>=text.length){
+      clearInterval(timer);
+      resultText.style.borderRight='none';
+    }
+  },speed);
+}
 
 // BOTÃO DA MÚSICA – simples e 100% compatível
 startBtn.addEventListener('click',()=>{
@@ -67,7 +80,7 @@ startBtn.addEventListener('click',()=>{
 const escolhido=localStorage.getItem('presente');
 if(escolhido){
   result.style.display='block';
-  resultText.textContent=escolhido;
+  typeText(escolhido);
 }
 
 // cria cartões
@@ -80,7 +93,7 @@ gifts.forEach((gift,i)=>{
     localStorage.setItem('presente',gift);
     c.classList.add('opened');
     c.textContent='🎉';
-    resultText.textContent=gift;
+    typeText(gift);
     result.style.display='block';
     hearts();
   };
