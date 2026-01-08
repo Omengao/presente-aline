@@ -58,7 +58,7 @@
 </head>
 <body>
   <div id="audioOverlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#ff5f9e,#ff9acb);display:flex;align-items:center;justify-content:center;z-index:999;">
-    <button onclick="startSurprise()" style="font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff;">🎵 Toque para iniciar sua surpresa</button>
+    <button id="startBtn" style="font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff;">🎵 Toque para iniciar sua surpresa</button>
   </div>
 
   <audio id="bgMusic" loop>
@@ -90,9 +90,13 @@
       "Um look surpresa escolhido por você mesma"
     ];
 
-    function startSurprise(){
+    // inicia música e libera a página
+    document.getElementById('startBtn').addEventListener('click', () => {
       const music = document.getElementById('bgMusic');
+      music.muted = false;
       music.play().catch(()=>{});
+      document.getElementById('audioOverlay').style.display = 'none';
+    }););
       document.getElementById('audioOverlay').style.display='none';
 
       // se já foi escolhido anteriormente, bloqueia aqui (após o clique válido)
@@ -116,11 +120,11 @@
     }
 
     // bloqueio de acesso único (executa APÓS carregar a página)
-    // acesso único: só bloqueia DEPOIS que um presente for escolhido
-    // permite sempre passar da tela de música
-    if (localStorage.getItem('presenteEscolhido')) {
-      // mostra mensagem somente após a música iniciar
-      window.__PRESENTE_JA_ESCOLHIDO__ = true;
+    // acesso único SOMENTE após a escolha (não interfere na música)
+    const escolhido = localStorage.getItem('presenteEscolhido');
+    if (escolhido) {
+      window.__PRESENTE_JA_ESCOLHIDO__ = escolhido;
+    }
     }(){
       const music = document.getElementById('bgMusic');
       music.play().catch(()=>{});
@@ -142,6 +146,11 @@
     const cardsContainer = document.getElementById('cards');
     const result = document.getElementById('result');
     const resultText = document.getElementById('resultText');
+
+    if (window.__PRESENTE_JA_ESCOLHIDO__) {
+      result.style.display = 'block';
+      resultText.textContent = window.__PRESENTE_JA_ESCOLHIDO__;
+    }
 
     gifts.forEach((gift, index) => {
       const card = document.createElement('div');
