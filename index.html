@@ -75,7 +75,7 @@
     <div class="result" id="result">
       <h2>🎁 Presente escolhido!</h2>
       <p id="resultText"></p>
-      <p style="margin-top:15px;font-size:1.1rem;">Hoje <strong>08/01/2026</strong>, quero que você saiba que cada detalhe disso foi pensado com amor.
+      <p style="margin-top:15px;font-size:1.1rem;">Hoje <strong>08/01/2026</strong>, quero que você saiba que cada detalhe disso foi pensado com carinho.
       Feliz aniversário, meu eterno amor ❤️🎂</p>
     </div>
   </div>
@@ -141,10 +141,8 @@
 
         createHearts();
 
-        setTimeout(() => {
-          result.style.display = 'block';
-          resultText.innerText = gift;
-        }, 600);
+        resultText.textContent = gift;
+        result.style.display = 'block';
       };
 
       cardsContainer.appendChild(card);
