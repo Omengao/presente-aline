@@ -14,7 +14,7 @@ h1{font-size:2.3rem}
 .card.opened{background:#ff4d94;color:#fff}
 .result{display:none;margin-top:25px;animation:fade .5s ease}#resultText{display:inline-block;font-size:1.3rem;font-weight:600;white-space:pre-wrap;border-right:2px solid rgba(255,255,255,.8);padding-right:4px;animation:blink 1s step-end infinite}@keyframes blink{50%{border-color:transparent}}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.heart{position:fixed;top:-10px;font-size:22px;animation:fall linear forwards;z-index:1}
+.heart{position:fixed;top:-10px;font-size:22px;animation:fall linear forwards;z-index:9999;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh);opacity:0}}
 #audioOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#ff5f9e,#ff9acb);display:flex;align-items:center;justify-content:center;z-index:999}
 #audioOverlay button{font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff}
@@ -59,14 +59,37 @@ const resultText=document.getElementById('resultText');
 function typeText(text){
   resultText.textContent='';
   let i=0;
-  const speed=45;
+  const speed=70;
   const timer=setInterval(()=>{
     resultText.textContent+=text.charAt(i);
     i++;
     if(i>=text.length){
       clearInterval(timer);
       resultText.style.borderRight='none';
+      explodeHearts();
     }
+  },speed);
+}
+
+function explodeHearts(){
+  for(let i=0;i<40;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.textContent=Math.random()>0.5?'❤️':'💖';
+    h.style.left='50vw';
+    h.style.top='50vh';
+    const angle=Math.random()*2*Math.PI;
+    const distance=100+Math.random()*150;
+    const x=Math.cos(angle)*distance;
+    const y=Math.sin(angle)*distance;
+    h.animate([
+      {transform:'translate(0,0) scale(1)',opacity:1},
+      {transform:`translate(${x}px,${y}px) scale(1.5)`,opacity:0}
+    ],{duration:1200,easing:'ease-out'});
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1200);
+  }
+}
   },speed);
 }
 
