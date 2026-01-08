@@ -57,9 +57,14 @@
   </style>
 </head>
 <body>
-  <audio autoplay loop>
+  <div id="audioOverlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#ff5f9e,#ff9acb);display:flex;align-items:center;justify-content:center;z-index:999;">
+    <button onclick="startSurprise()" style="font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff;">🎵 Toque para iniciar sua surpresa</button>
+  </div>
+
+  <audio id="bgMusic" loop>
     <source src="eterno-amor.mp3" type="audio/mpeg">
   </audio>
+
   <div class="container">
     <h1>Feliz Aniversário, meu amor 🎉❤️</h1>
     <p class="subtitle">Preparei um joguinho especial para você escolher o seu presente de aniversário.
@@ -84,6 +89,26 @@
       "Um PIX para gastar como quiser",
       "Um look surpresa escolhido por você mesma"
     ];
+
+    function createHearts() {
+      for (let i = 0; i < 40; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerText = Math.random() > 0.5 ? '❤️' : '💖';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = 3 + Math.random() * 3 + 's';
+        document.body.appendChild(heart);
+        createHearts();
+
+        setTimeout(() => heart.remove(), 6000);
+      }
+    }
+
+    function startSurprise(){
+      const music = document.getElementById('bgMusic');
+      music.play().catch(()=>{});
+      document.getElementById('audioOverlay').style.display='none';
+    }
 
     function createHearts() {
       for (let i = 0; i < 40; i++) {
