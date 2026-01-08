@@ -94,6 +94,13 @@
       const music = document.getElementById('bgMusic');
       music.play().catch(()=>{});
       document.getElementById('audioOverlay').style.display='none';
+
+      // se já foi escolhido anteriormente, bloqueia aqui (após o clique válido)
+      if (window.__PRESENTE_JA_ESCOLHIDO__) {
+        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:1.3rem;">💖 Este presente já foi escolhido.<br>Guarde esse momento no coração ❤️</div>';
+      }
+    });
+      document.getElementById('audioOverlay').style.display='none';
     }
 
     function createHearts() {
@@ -109,11 +116,12 @@
     }
 
     // bloqueio de acesso único (executa APÓS carregar a página)
-    window.addEventListener('load', () => {
-      if (localStorage.getItem('presenteEscolhido')) {
-        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:1.3rem;">💖 Este presente já foi escolhido.<br>Guarde esse momento no coração ❤️</div>';
-      }
-    });(){
+    // acesso único: só bloqueia DEPOIS que um presente for escolhido
+    // permite sempre passar da tela de música
+    if (localStorage.getItem('presenteEscolhido')) {
+      // mostra mensagem somente após a música iniciar
+      window.__PRESENTE_JA_ESCOLHIDO__ = true;
+    }(){
       const music = document.getElementById('bgMusic');
       music.play().catch(()=>{});
       document.getElementById('audioOverlay').style.display='none';
