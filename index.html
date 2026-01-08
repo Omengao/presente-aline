@@ -108,12 +108,12 @@
       }
     }
 
-    // bloqueio de acesso único
-    if (localStorage.getItem('presenteEscolhido')) {
-      document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:1.3rem;">💖 Este presente já foi escolhido.<br>Guarde esse momento no coração ❤️</div>';
-    }
-
-    const cardsContainer = document.getElementById('cards');(){
+    // bloqueio de acesso único (executa APÓS carregar a página)
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('presenteEscolhido')) {
+        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:1.3rem;">💖 Este presente já foi escolhido.<br>Guarde esse momento no coração ❤️</div>';
+      }
+    });(){
       const music = document.getElementById('bgMusic');
       music.play().catch(()=>{});
       document.getElementById('audioOverlay').style.display='none';
