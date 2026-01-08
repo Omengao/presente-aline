@@ -1,180 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Escolha Seu Presente ❤️</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #ff5f9e, #ff9acb);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      overflow: hidden;
-    }
-    .container {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 900px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      position: relative;
-      z-index: 2;
-    }
-    h1 { font-size: 2.4rem; margin-bottom: 10px; }
-    p.subtitle { opacity: 0.95; margin-bottom: 30px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; }
-    .card {
-      background: #fff; color: #ff4d94; border-radius: 15px; padding: 25px 10px;
-      font-size: 1.2rem; font-weight: bold; cursor: pointer;
-      transition: transform 0.25s, box-shadow 0.25s;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    .card:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 14px 30px rgba(0,0,0,0.3); }
-    .card.opened { background: #ff4d94; color: #fff; cursor: default; }
-    .result { margin-top: 30px; display: none; animation: fadeIn 0.6s ease forwards; }
-    .result h2 { font-size: 2rem; margin-bottom: 10px; }
-    .result p { font-size: 1.1rem; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .heart {
-      position: fixed;
-      top: -10px;
-      font-size: 20px;
-      animation: fall linear forwards;
-      z-index: 1;
-    }
-    @keyframes fall {
-      to { transform: translateY(110vh); opacity: 0; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escolha Seu Presente ❤️</title>
+<style>
+body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#ff5f9e,#ff9acb);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden}
+.container{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:20px;padding:30px;max-width:900px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.25);position:relative;z-index:2}
+h1{font-size:2.3rem}
+.subtitle{margin-bottom:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px}
+.card{background:#fff;color:#ff4d94;border-radius:15px;padding:25px 10px;font-size:1.3rem;font-weight:bold;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.card.opened{background:#ff4d94;color:#fff}
+.result{display:none;margin-top:25px;animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.heart{position:fixed;top:-10px;font-size:22px;animation:fall linear forwards;z-index:1}
+@keyframes fall{to{transform:translateY(110vh);opacity:0}}
+#audioOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#ff5f9e,#ff9acb);display:flex;align-items:center;justify-content:center;z-index:999}
+#audioOverlay button{font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff}
+</style>
 </head>
 <body>
-  <div id="audioOverlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#ff5f9e,#ff9acb);display:flex;align-items:center;justify-content:center;z-index:999;">
-    <button id="startBtn" style="font-size:1.2rem;padding:18px 30px;border-radius:30px;border:none;font-weight:bold;color:#ff4d94;background:#fff;">🎵 Toque para iniciar sua surpresa</button>
+
+<div id="audioOverlay">
+  <button id="startBtn">🎵 Toque para iniciar sua surpresa</button>
+</div>
+
+<audio id="music" src="eterno-amor.mp3"></audio>
+
+<div class="container">
+  <h1>Feliz Aniversário, meu amor 🎉❤️</h1>
+  <p class="subtitle">Escolha com carinho o seu presente 👇</p>
+
+  <div class="grid" id="cards"></div>
+
+  <div class="result" id="result">
+    <h2>🎁 Presente escolhido!</h2>
+    <p id="resultText"></p>
+    <p style="margin-top:15px">Quero que você saiba que cada detalhe disso foi feito pensando em você, meu eterno amor ❤️</p>
   </div>
+</div>
 
-  <audio id="bgMusic" loop>
-    <source src="eterno-amor.mp3" type="audio/mpeg">
-  </audio>
+<script>
+const gifts=[
+"Uma viagem de fim de semana para um lugar especial",
+"Um perfume que você ama",
+"Um sapato / sandália / bota que você escolher",
+"Um dia inteiro só nosso",
+"Um PIX para gastar como quiser",
+"Um look surpresa escolhido por você mesma"
+];
 
-  <div class="container">
-    <h1>Feliz Aniversário, meu amor 🎉❤️</h1>
-    <p class="subtitle">Preparei um joguinho especial para você escolher o seu presente de aniversário.
-      Escolha com carinho 👇</p>
+const overlay=document.getElementById('audioOverlay');
+const music=document.getElementById('music');
+const cards=document.getElementById('cards');
+const result=document.getElementById('result');
+const resultText=document.getElementById('resultText');
 
-    <div class="grid" id="cards"></div>
+// BOTÃO DA MÚSICA – simples e 100% compatível
+startBtn.addEventListener('click',()=>{
+  music.play();
+  overlay.style.display='none';
+});
 
-    <div class="result" id="result">
-      <h2>🎁 Presente escolhido!</h2>
-      <p id="resultText"></p>
-      <p style="margin-top:15px;font-size:1.1rem;">Hoje <strong>08/01/2026</strong>, quero que você saiba que cada detalhe disso foi pensado com carinho.
-      Feliz aniversário, meu eterno amor ❤️🎂</p>
-    </div>
-  </div>
+// acesso único
+const escolhido=localStorage.getItem('presente');
+if(escolhido){
+  result.style.display='block';
+  resultText.textContent=escolhido;
+}
 
-  <script>
-    const gifts = [
-      "Uma viagem de fim de semana para um lugar especial",
-      "Um perfume que você ama",
-      "Um sapato / sandália / bota que você escolher",
-      "Um dia inteiro só nosso",
-      "Um PIX para gastar como quiser",
-      "Um look surpresa escolhido por você mesma"
-    ];
+// cria cartões
+gifts.forEach((gift,i)=>{
+  const c=document.createElement('div');
+  c.className='card';
+  c.textContent=i+1;
+  c.onclick=()=>{
+    if(localStorage.getItem('presente'))return;
+    localStorage.setItem('presente',gift);
+    c.classList.add('opened');
+    c.textContent='🎉';
+    resultText.textContent=gift;
+    result.style.display='block';
+    hearts();
+  };
+  cards.appendChild(c);
+});
 
-    // inicia música e libera a página
-    document.getElementById('startBtn').addEventListener('click', () => {
-      const music = document.getElementById('bgMusic');
-      music.muted = false;
-      music.play().catch(()=>{});
-      document.getElementById('audioOverlay').style.display = 'none';
-    }););
-      document.getElementById('audioOverlay').style.display='none';
-
-      // se já foi escolhido anteriormente, bloqueia aqui (após o clique válido)
-      if (window.__PRESENTE_JA_ESCOLHIDO__) {
-        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:1.3rem;">💖 Este presente já foi escolhido.<br>Guarde esse momento no coração ❤️</div>';
-      }
-    });
-      document.getElementById('audioOverlay').style.display='none';
-    }
-
-    function createHearts() {
-      for (let i = 0; i < 40; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerText = Math.random() > 0.5 ? '❤️' : '💖';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = 3 + Math.random() * 3 + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-      }
-    }
-
-    // bloqueio de acesso único (executa APÓS carregar a página)
-    // acesso único SOMENTE após a escolha (não interfere na música)
-    const escolhido = localStorage.getItem('presenteEscolhido');
-    if (escolhido) {
-      window.__PRESENTE_JA_ESCOLHIDO__ = escolhido;
-    }
-    }(){
-      const music = document.getElementById('bgMusic');
-      music.play().catch(()=>{});
-      document.getElementById('audioOverlay').style.display='none';
-    }
-
-    function createHearts() {
-      for (let i = 0; i < 40; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerText = Math.random() > 0.5 ? '❤️' : '💖';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = 3 + Math.random() * 3 + 's';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-      }
-    }
-
-    const cardsContainer = document.getElementById('cards');
-    const result = document.getElementById('result');
-    const resultText = document.getElementById('resultText');
-
-    if (window.__PRESENTE_JA_ESCOLHIDO__) {
-      result.style.display = 'block';
-      resultText.textContent = window.__PRESENTE_JA_ESCOLHIDO__;
-    }
-
-    gifts.forEach((gift, index) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerText = index + 1;
-
-      card.onclick = () => {
-        if (document.body.classList.contains('locked')) return;
-
-        document.body.classList.add('locked');
-        document.querySelectorAll('.card').forEach(c => c.onclick = null);
-        card.classList.add('opened');
-        card.innerText = '🎉';
-
-        createHearts();
-
-        resultText.textContent = gift;
-        result.style.display = 'block';
-
-        localStorage.setItem('presenteEscolhido', gift);
-      };
-
-      cardsContainer.appendChild(card);
-    });
-  </script>
+function hearts(){
+  for(let i=0;i<30;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.textContent=Math.random()>0.5?'❤️':'💖';
+    h.style.left=Math.random()*100+'vw';
+    h.style.animationDuration=3+Math.random()*3+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  }
+}
+</script>
 </body>
 </html>
