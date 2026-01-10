@@ -42,20 +42,34 @@ h1{font-size:2.3rem}
 </div>
 
 <script>
-const gifts=[
-"Uma viagem de fim de semana para um lugar especial",
-"Um perfume que você ama",
-"Um sapato / sandália / bota que você escolher",
-"Um dia inteiro só nosso",
-"Um PIX para gastar como quiser",
-"Um look surpresa escolhido por você mesma"
+// ===== ELEMENTOS =====
+const overlay = document.getElementById('audioOverlay');
+const startBtn = document.getElementById('startBtn');
+const music = document.getElementById('music');
+const cards = document.getElementById('cards');
+const result = document.getElementById('result');
+const resultText = document.getElementById('resultText');
+
+// ===== BOTÃO DA MÚSICA (VERSÃO À PROVA DE MOBILE) =====
+startBtn.addEventListener('click', async () => {
+  try {
+    music.currentTime = 0;
+    await music.play();
+  } catch (e) {}
+  overlay.style.display = 'none';
+});
+
+// ===== PRESENTES =====
+const gifts = [
+  "Uma viagem de fim de semana para um lugar especial",
+  "Um perfume que você ama",
+  "Um sapato / sandália / bota que você escolher",
+  "Um dia inteiro só nosso",
+  "Um PIX para gastar como quiser",
+  "Um look surpresa escolhido por você mesma"
 ];
 
-const overlay=document.getElementById('audioOverlay');
-const music=document.getElementById('music');
-const cards=document.getElementById('cards');
-const result=document.getElementById('result');
-const resultText=document.getElementById('resultText');
+// ===== EFEITO DE DIGITAÇÃO =====
 function typeText(text){
   resultText.textContent='';
   let i=0;
@@ -71,6 +85,7 @@ function typeText(text){
   },speed);
 }
 
+// ===== EXPLOSÃO DE CORAÇÕES =====
 function explodeHearts(){
   for(let i=0;i<40;i++){
     const h=document.createElement('div');
@@ -78,7 +93,7 @@ function explodeHearts(){
     h.textContent=Math.random()>0.5?'❤️':'💖';
     h.style.left='50vw';
     h.style.top='50vh';
-    const angle=Math.random()*2*Math.PI;
+    const angle=Math.random()*Math.PI*2;
     const distance=100+Math.random()*150;
     const x=Math.cos(angle)*distance;
     const y=Math.sin(angle)*distance;
@@ -90,40 +105,32 @@ function explodeHearts(){
     setTimeout(()=>h.remove(),1200);
   }
 }
-  },speed);
-}
 
-// BOTÃO DA MÚSICA – simples e 100% compatível
-const startBtn = document.getElementById('startBtn');
-startBtn.addEventListener('click',()=>{
-  music.play();
-  overlay.style.display='none';
-});
-
-// acesso único
-const escolhido=localStorage.getItem('presente');
+// ===== ACESSO ÚNICO =====
+const escolhido = localStorage.getItem('presente');
 if(escolhido){
   result.style.display='block';
   typeText(escolhido);
 }
 
-// cria cartões
+// ===== CARTÕES =====
 gifts.forEach((gift,i)=>{
   const c=document.createElement('div');
   c.className='card';
   c.textContent=i+1;
-  c.onclick=()=>{
+  c.addEventListener('click',()=>{
     if(localStorage.getItem('presente'))return;
     localStorage.setItem('presente',gift);
     c.classList.add('opened');
     c.textContent='🎉';
-    typeText(gift);
     result.style.display='block';
+    typeText(gift);
     hearts();
-  };
+  });
   cards.appendChild(c);
 });
 
+// ===== CHUVA DE CORAÇÕES =====
 function hearts(){
   for(let i=0;i<30;i++){
     const h=document.createElement('div');
